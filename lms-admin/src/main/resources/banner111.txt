@@ -1,0 +1,7 @@
+Application Version: ${lms.version}
+Spring Boot Version: ${spring-boot.version}
+,--.   ,--.   ,--. ,---.
+|  |   |   `.'   |'   .-'
+|  |   |  |'.'|  |`.  `-.
+|  '--.|  |   |  |.-'    |
+`-----'`--'   `--'`-----'
