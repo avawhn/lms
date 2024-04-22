@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.MaterialMapper">
+
+    <resultMap type="Material" id="MaterialResult">
+        <result property="materialId" column="material_id"/>
+        <result property="materialName" column="material_name"/>
+        <result property="groupId" column="group_id"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="materialNumber" column="material_number"/>
+        <result property="chargePersonId" column="charge_person_id"/>
+        <result property="telephone" column="telephone"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+
+        <result property="groupName" column="group_name"/>
+        <result property="chargePersonName" column="charge_person_name"/>
+    </resultMap>
+
+    <sql id="selectMaterialVo">
+        select material_id,
+               material_name,
+               group_id,
+               image_url,
+               material_number,
+               charge_person_id,
+               telephone,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from t_material
+    </sql>
+
+
+    <sql id="selectMaterialDetailVo">
+        select m.material_id,
+               m.material_name,
+               m.group_id,
+               m.image_url,
+               m.material_number,
+               m.charge_person_id,
+               m.telephone,
+               m.create_by,
+               m.create_time,
+               m.update_by,
+               m.update_time,
+               m.remark,
+               u.nick_name as charge_person_name,
+               g.group_name
+        from t_material m, sys_user u, t_group g
+    </sql>
+
+
+    <select id="selectMaterialList" parameterType="Material" resultMap="MaterialResult">
+        <include refid="selectMaterialDetailVo"/>
+        <where>
+            m.group_id = g.group_id and m.charge_person_id = u.user_id
+            <if test="materialName != null  and materialName != ''">and m.material_name like concat('%',
+                #{materialName},
+                '%')
+            </if>
+            <if test="groupId != null ">and m.group_id = #{groupId}</if>
+            <if test="imageUrl != null  and imageUrl != ''">and m.image_url = #{imageUrl}</if>
+            <if test="materialNumber != null ">and m.material_number = #{materialNumber}</if>
+            <if test="chargePersonId != null ">and m.charge_person_id = #{chargePersonId}</if>
+            <if test="telephone != null  and telephone != ''">and m.telephone = #{telephone}</if>
+        </where>
+    </select>
+
+    <select id="selectMaterialByMaterialId" parameterType="Long" resultMap="MaterialResult">
+        <include refid="selectMaterialVo"/>
+        where material_id = #{materialId}
+    </select>
+
+    <insert id="insertMaterial" parameterType="Material">
+        insert into t_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="materialId != null">material_id,</if>
+            <if test="materialName != null and materialName != ''">material_name,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url,</if>
+            <if test="materialNumber != null">material_number,</if>
+            <if test="chargePersonId != null">charge_person_id,</if>
+            <if test="telephone != null">telephone,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="materialId != null">#{materialId},</if>
+            <if test="materialName != null and materialName != ''">#{materialName},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="imageUrl != null and imageUrl != ''">#{imageUrl},</if>
+            <if test="materialNumber != null">#{materialNumber},</if>
+            <if test="chargePersonId != null">#{chargePersonId},</if>
+            <if test="telephone != null">#{telephone},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMaterial" parameterType="Material">
+        update t_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialName != null and materialName != ''">material_name = #{materialName},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="imageUrl != null and imageUrl != ''">image_url = #{imageUrl},</if>
+            <if test="materialNumber != null">material_number = #{materialNumber},</if>
+            <if test="chargePersonId != null">charge_person_id = #{chargePersonId},</if>
+            <if test="telephone != null">telephone = #{telephone},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where material_id = #{materialId}
+    </update>
+
+    <delete id="deleteMaterialByMaterialId" parameterType="Long">
+        delete
+        from t_material
+        where material_id = #{materialId}
+    </delete>
+
+    <delete id="deleteMaterialByMaterialIds" parameterType="String">
+        delete from t_material where material_id in
+        <foreach item="materialId" collection="array" open="(" separator="," close=")">
+            #{materialId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.GroupMapper">
+
+    <resultMap type="Group" id="GroupResult">
+        <result property="groupId" column="group_id"/>
+        <result property="groupName" column="group_name"/>
+        <result property="groupDuty" column="group_duty"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="fullPath" column="full_path"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectGroupVo">
+        select group_id,
+               group_name,
+               group_duty,
+               parent_id,
+               full_path,
+               order_num,
+               create_by,
+               create_time,
+               update_by,
+               update_time,
+               remark
+        from t_group
+    </sql>
+
+    <select id="selectGroupList" parameterType="Group" resultMap="GroupResult">
+        <include refid="selectGroupVo"/>
+        <where>
+            <if test="groupName != null  and groupName != ''">and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="groupDuty != null  and groupDuty != ''">and group_duty = #{groupDuty}</if>
+            <if test="parentId != null ">and parent_id = #{parentId}</if>
+            <if test="fullPath != null  and fullPath != ''">and full_path = #{fullPath}</if>
+            <if test="orderNum != null ">and order_num = #{orderNum}</if>
+        </where>
+        order by order_num
+    </select>
+
+    <select id="selectGroupByGroupId" parameterType="Long" resultMap="GroupResult">
+        <include refid="selectGroupVo"/>
+        where group_id = #{groupId}
+    </select>
+
+    <insert id="insertGroup" parameterType="Group">
+        insert into t_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">group_id,</if>
+            <if test="groupName != null and groupName != ''">group_name,</if>
+            <if test="groupDuty != null">group_duty,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="fullPath != null">full_path,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupId != null">#{groupId},</if>
+            <if test="groupName != null and groupName != ''">#{groupName},</if>
+            <if test="groupDuty != null">#{groupDuty},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="fullPath != null">#{fullPath},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGroup" parameterType="Group">
+        update t_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupName != null and groupName != ''">group_name = #{groupName},</if>
+            <if test="groupDuty != null">group_duty = #{groupDuty},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="fullPath != null">full_path = #{fullPath},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where group_id = #{groupId}
+    </update>
+
+    <delete id="deleteGroupByGroupId" parameterType="Long">
+        delete
+        from t_group
+        where group_id = #{groupId}
+    </delete>
+
+    <delete id="deleteGroupByGroupIds" parameterType="String">
+        delete from t_group where group_id in
+        <foreach item="groupId" collection="array" open="(" separator="," close=")">
+            #{groupId}
+        </foreach>
+    </delete>
+</mapper>

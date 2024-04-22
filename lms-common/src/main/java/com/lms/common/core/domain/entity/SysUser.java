@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author ruoyi
  */
-public class SysUser extends BaseEntity {
+public class SysUser extends BaseEntity implements Cloneable {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -32,6 +32,9 @@ public class SysUser extends BaseEntity {
      */
     @Excel(name = "部门编号", type = Excel.Type.IMPORT)
     private Long deptId;
+
+    @Excel(name = "分组编号", type = Excel.Type.IMPORT)
+    private Long groupId;
 
     /**
      * 用户账号
@@ -105,6 +108,13 @@ public class SysUser extends BaseEntity {
     })
     private SysDept dept;
 
+    @Excels({
+            @Excel(name = "分组名称", targetAttr = "groupName", type = Excel.Type.EXPORT),
+            @Excel(name = "工作内容", targetAttr = "groupDuty", type = Excel.Type.EXPORT)
+    })
+    private Group group;
+
+
     /**
      * 角色对象
      */
@@ -131,6 +141,22 @@ public class SysUser extends BaseEntity {
 
     public SysUser(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     public Long getUserId() {
@@ -298,6 +324,7 @@ public class SysUser extends BaseEntity {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("userId", getUserId())
                 .append("deptId", getDeptId())
+                .append("groupId",getGroupId())
                 .append("userName", getUserName())
                 .append("nickName", getNickName())
                 .append("email", getEmail())
@@ -315,6 +342,18 @@ public class SysUser extends BaseEntity {
                 .append("updateTime", getUpdateTime())
                 .append("remark", getRemark())
                 .append("dept", getDept())
+                .append("group", getGroup())
                 .toString();
+    }
+
+    /**
+     * 浅克隆
+     *
+     * @return 克隆的对象
+     * @throws CloneNotSupportedException 不支持克隆
+     */
+    @Override
+    public SysUser clone() throws CloneNotSupportedException {
+        return (SysUser) super.clone();
     }
 }

@@ -13,6 +13,7 @@ lms:
   # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
 
+
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
@@ -30,6 +31,8 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
+  workerId: 1
+  datacenterId: 1
 
 # 日志配置
 logging:
@@ -127,3 +130,14 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+
+minio:
+  endpoint: http://192.168.56.100:9000
+  accessKey: LZL1zUdgl6d4R1hzRKqc
+  secretKey: vxdLJH7CDoXQrOgRd5NtmntRyCG1AdMhhkUOaIfe
+  bucket: lms
+  # 640 秒 = 10 分钟
+  duration:
+    get: 640
+    put: 640

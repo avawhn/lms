@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.DailyMapper">
+    <resultMap type="Daily" id="DailyResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="date" column="date"/>
+        <result property="content" column="content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectDailyVo">
+        select d.id,
+               d.user_id,
+               d.date,
+               d.content,
+               d.create_time,
+               d.update_time,
+               d.remark,
+               u.nick_name
+        from t_daily d
+                 inner join sys_user u on d.user_id = u.user_id
+    </sql>
+
+    <select id="selectDailyList" parameterType="Daily" resultMap="DailyResult">
+        <include refid="selectDailyVo"/>
+        <where>
+            <if test="userId != null ">and d.user_id = #{userId}</if>
+            <if test="date != null ">and d.date = #{date}</if>
+            <if test="content != null  and content != ''">and d.content = #{content}</if>
+            <if test="date == null and params.beginTime != null">and d.date >= #{params.beginTime}</if>
+            <if test="date == null and params.endTime != null">and d.date <![CDATA[<=]]> #{params.endTime}</if>
+        </where>
+        order by d.date
+    </select>
+
+    <select id="selectDailyById" parameterType="Long" resultMap="DailyResult">
+        <include refid="selectDailyVo"/>
+        where d.id = #{id}
+    </select>
+
+    <select id="selectDailyByUserIdAndDate" resultMap="DailyResult">
+        <include refid="selectDailyVo"/>
+        where d.user_id=#{userId} and d.date=#{date}
+    </select>
+
+    <insert id="insertDaily" parameterType="Daily" useGeneratedKeys="true" keyProperty="id">
+        insert into t_daily
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="date != null">date,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="date != null">#{date},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDaily" parameterType="Daily">
+        update t_daily
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDailyById" parameterType="Long">
+        delete
+        from t_daily
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteDailyByIds" parameterType="String">
+        delete from t_daily where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

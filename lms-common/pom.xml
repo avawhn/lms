@@ -126,6 +126,17 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
 
+        <!-- MinIO JDK -->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

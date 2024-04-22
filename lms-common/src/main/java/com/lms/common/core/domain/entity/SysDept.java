@@ -1,15 +1,15 @@
 package com.lms.common.core.domain.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.lms.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import com.lms.common.core.domain.BaseEntity;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 部门表 sys_dept
@@ -55,6 +55,7 @@ public class SysDept extends BaseEntity
     
     /** 子部门 */
     private List<SysDept> children = new ArrayList<SysDept>();
+
 
     public Long getDeptId()
     {
