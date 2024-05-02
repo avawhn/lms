@@ -99,6 +99,6 @@ public class GroupController extends BaseController {
     @Log(title = "组", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids) {
-        return toAjax(groupService.deleteGroupByIds(ids));
+        return groupService.deleteGroupByIds(ids);
     }
 }

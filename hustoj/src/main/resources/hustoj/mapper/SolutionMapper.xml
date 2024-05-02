@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.hustoj.mapper.SolutionMapper">
+    <resultMap id="SolutionResult" type="com.lms.hustoj.domain.Solution">
+        <id property="solutionId" column="solution_id"/>
+        <result property="problemId" column="problem_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="nick" column="nick"/>
+        <result property="time" column="time"/>
+        <result property="memory" column="memory"/>
+        <result property="inDate" column="in_date"/>
+        <result property="result" column="result"/>
+        <result property="language" column="language"/>
+        <result property="ip" column="ip"/>
+        <result property="contestId" column="contest_id"/>
+        <result property="valid" column="valid"/>
+        <result property="num" column="num"/>
+        <result property="codeLength" column="code_length"/>
+        <result property="judgetime" column="judgetime"/>
+        <result property="passRate" column="pass_rate"/>
+        <result property="lintError" column="lint_error"/>
+        <result property="judger" column="judger"/>
+        <result property="remoteOj" column="remote_oj"/>
+        <result property="remoteId" column="remote_id"/>
+    </resultMap>
+
+    <sql id="selectSolutionVo">
+        SELECT solution_id,
+               problem_id,
+               user_id,
+               nick, `time`, memory, in_date, result, `language`, ip, contest_id, valid, num, code_length, judgetime, pass_rate, lint_error, judger, remote_oj, remote_id
+        FROM solution
+    </sql>
+
+    <select id="selectSolutionBySolutionId" resultType="com.lms.hustoj.domain.Solution">
+        <include refid="selectSolutionVo"/>
+        where solution_id = #{solutionId}
+    </select>
+</mapper>

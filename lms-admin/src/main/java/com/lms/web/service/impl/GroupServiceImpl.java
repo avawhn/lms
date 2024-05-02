@@ -1,5 +1,6 @@
 package com.lms.web.service.impl;
 
+import com.lms.common.core.domain.AjaxResult;
 import com.lms.common.utils.DateUtils;
 import com.lms.common.utils.IdGenerator;
 import com.lms.common.core.domain.entity.Group;
@@ -78,6 +79,13 @@ public class GroupServiceImpl implements IGroupService {
      */
     @Override
     public int updateGroup(Group group) {
+        Group currentGroup = groupMapper.selectGroupByGroupId(group.getGroupId());
+        // 父级id修改，需要修改全路径
+        Long parentId = group.getParentId();
+        if (parentId != null && !currentGroup.getParentId().equals(parentId)) {
+            Group parent = groupMapper.selectGroupByGroupId(parentId);
+            group.setFullPath(parent.getFullPath() + "/" + group.getGroupId());
+        }
         group.setUpdateTime(DateUtils.getNowDate());
         return groupMapper.updateGroup(group);
     }
@@ -89,8 +97,15 @@ public class GroupServiceImpl implements IGroupService {
      * @return 结果
      */
     @Override
-    public int deleteGroupByIds(Long[] ids) {
-        return groupMapper.deleteGroupByGroupIds(ids);
+    public AjaxResult deleteGroupByIds(Long[] ids) {
+        for (Long id : ids) {
+            List<Group> groups = groupMapper.selectGroupByParentId(id);
+            if (!groups.isEmpty()) {
+                return AjaxResult.error("含有子项, 删除失败");
+            }
+        }
+        int res = groupMapper.deleteGroupByGroupIds(ids);
+        return res > 0 ? AjaxResult.success() : AjaxResult.error("删除失败");
     }
 
     /**

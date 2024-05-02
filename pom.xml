@@ -179,11 +179,21 @@
             </dependency>
 
 
+
+            <!-- hustoj -->
+            <dependency>
+                <groupId>com.whn</groupId>
+                <artifactId>hustoj</artifactId>
+                <version>${lms.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
             </dependency>
+
 
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
@@ -208,6 +218,7 @@
         <module>lms-quartz</module>
         <module>lms-generator</module>
         <module>lms-common</module>
+        <module>hustoj</module>
     </modules>
 
     <packaging>pom</packaging>

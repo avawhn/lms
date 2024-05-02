@@ -1,5 +1,6 @@
 package com.lms.web.service;
 
+import com.lms.common.core.domain.AjaxResult;
 import com.lms.common.core.domain.entity.Group;
 
 import java.util.List;
@@ -46,11 +47,11 @@ public interface IGroupService
 
     /**
      * 批量删除组
-     * 
+     *
      * @param ids 需要删除的组主键集合
      * @return 结果
      */
-    public int deleteGroupByIds(Long[] ids);
+    public AjaxResult deleteGroupByIds(Long[] ids);
 
     /**
      * 删除组信息

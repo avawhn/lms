@@ -24,6 +24,12 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
+        <result property="college" column="college"/>
+        <result property="major" column="major"/>
+        <result property="grade" column="grade"/>
+        <result property="stuNum" column="stu_num"/>
+        <result property="teamGrade" column="team_grade"/>
+        <result property="inService" column="in_service"/>
         <association property="dept" javaType="SysDept" resultMap="deptResult"/>
         <association property="group" javaType="Group" resultMap="com.lms.web.mapper.GroupMapper.GroupResult"/>
         <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
@@ -66,6 +72,12 @@
                u.create_by,
                u.create_time,
                u.remark,
+               u.college,
+               u.major,
+               u.grade,
+               u.stu_num,
+               u.team_grade,
+               u.in_service,
                d.dept_id,
                d.parent_id,
                d.ancestors,
@@ -104,6 +116,12 @@
                u.create_by,
                u.create_time,
                u.remark,
+               u.college,
+               u.major,
+               u.grade,
+               u.stu_num,
+               u.team_grade,
+               u.in_service,
                g.group_id,
                g.group_name,
                g.group_duty,
@@ -157,10 +175,10 @@
 
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.group_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
-        u.status,
-        u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, g.group_name, g.group_duty from
-        sys_user
-        u
+        u.status,u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,u.college,
+        u.major,u.grade,u.stu_num,u.team_grade,u.in_service,
+        g.group_name,g.group_duty from
+        sys_user u
         left join t_group g on u.group_id = g.group_id
         where u.del_flag = '0'
         <if test="userId != null and userId != 0">
@@ -175,6 +193,27 @@
         <if test="phonenumber != null and phonenumber != ''">
             AND u.phonenumber like concat('%', #{phonenumber}, '%')
         </if>
+
+
+        <if test="college != null and college != ''">
+            AND u.college like concat('%', #{college}, '%')
+        </if>
+        <if test="major != null and major != ''">
+            AND u.major like concat('%', #{major}, '%')
+        </if>
+        <if test="grade != null">
+            AND u.grade = #{grade}
+        </if>
+        <if test="stuNum != null and stuNum != ''">
+            AND u.stu_num = #{stuNum}
+        </if>
+        <if test="teamGrade != null">
+            AND u.team_grade = #{teamGrade}
+        </if>
+        <if test="inService != null">
+            AND u.in_service = #{inService}
+        </if>
+
         <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
             AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
         </if>
@@ -313,6 +352,15 @@
         <if test="status != null and status != ''">status,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
+
+        <if test="college != null and college != ''">college,</if>
+        <if test="major != null and major != ''">major,</if>
+        <if test="grade != null">grade,</if>
+        <if test="stuNum != null and stuNum != ''">stu_num,</if>
+        <if test="teamGrade != null">team_grade,</if>
+        <if test="inService != null">in_service,</if>
+
+
         <if test="groupId != null">group_id,</if>
         create_time
         )values(
@@ -328,6 +376,15 @@
         <if test="status != null and status != ''">#{status},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
+
+
+        <if test="college != null and college != ''">#{college},</if>
+        <if test="major != null and major != ''">#{major},</if>
+        <if test="grade != null">#{grade},</if>
+        <if test="stuNum != null and stuNum != ''">#{stuNum},</if>
+        <if test="teamGrade != null">#{teamGrade},</if>
+        <if test="inService != null">#{inService},</if>
+
         <if test="groupId != null">#{groupId},</if>
         sysdate()
         )
@@ -349,6 +406,15 @@
             <if test="loginDate != null">login_date = #{loginDate},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
+
+            <if test="college != null and college != ''">college = #{college},</if>
+            <if test="major != null and major != ''">major = #{major},</if>
+            <if test="grade != null">grade = #{grade},</if>
+            <if test="stuNum != null and stuNum != ''">stu_num = #{stuNum},</if>
+            <if test="teamGrade != null">team_grade = #{teamGrade},</if>
+            <if test="inService != null">in_service = #{inService},</if>
+
+
             <if test="groupId != null">group_id = #{groupId},</if>
             update_time = sysdate()
         </set>

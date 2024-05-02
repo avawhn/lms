@@ -135,12 +135,98 @@ public class SysUser extends BaseEntity implements Cloneable {
      */
     private Long roleId;
 
+
+    /**
+     * 学院
+     */
+    @Excel(name = "学院")
+    private String college;
+
+
+    /**
+     * 专业
+     */
+    @Excel(name = "专业")
+    private String major;
+
+
+    /**
+     * 年级
+     */
+    @Excel(name = "年级")
+    private Integer grade;
+
+    /**
+     * 学号
+     */
+    @Excel(name = "学号")
+    private String stuNum;
+
+    /**
+     * 队伍年级，一个队伍可能包含多个年级的学生，与年级区分
+     */
+    @Excel(name = "队伍年级")
+    private Integer teamGrade;
+
+
+    @Excel(name = "工作状态", readConverterExp = "true=在职,false=离职")
+    private Boolean inService;
+
+
     public SysUser() {
 
     }
 
     public SysUser(Long userId) {
         this.userId = userId;
+    }
+
+    public Boolean getInService() {
+        return inService;
+    }
+
+    public void setInService(Boolean inService) {
+        this.inService = inService;
+    }
+
+    public String getCollege() {
+        return college;
+    }
+
+    public void setCollege(String college) {
+        this.college = college;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
+    }
+
+    public String getStuNum() {
+        return stuNum;
+    }
+
+    public void setStuNum(String stuNum) {
+        this.stuNum = stuNum;
+    }
+
+    public Integer getTeamGrade() {
+        return teamGrade;
+    }
+
+    public void setTeamGrade(Integer teamGrade) {
+        this.teamGrade = teamGrade;
+    }
+
+    public void setGrade(Integer grade) {
+        this.grade = grade;
+    }
+
+    public Integer getGrade() {
+        return grade;
     }
 
     public Long getGroupId() {
@@ -324,7 +410,7 @@ public class SysUser extends BaseEntity implements Cloneable {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
                 .append("userId", getUserId())
                 .append("deptId", getDeptId())
-                .append("groupId",getGroupId())
+                .append("groupId", getGroupId())
                 .append("userName", getUserName())
                 .append("nickName", getNickName())
                 .append("email", getEmail())
@@ -343,6 +429,12 @@ public class SysUser extends BaseEntity implements Cloneable {
                 .append("remark", getRemark())
                 .append("dept", getDept())
                 .append("group", getGroup())
+                .append("college", getCollege())
+                .append("major", getMajor())
+                .append("grade", getGrade())
+                .append("stuNum", getStuNum())
+                .append("teamGrade", getTeamGrade())
+                .append("inService", getInService())
                 .toString();
     }
 

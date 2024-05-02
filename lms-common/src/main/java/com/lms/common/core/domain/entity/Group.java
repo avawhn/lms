@@ -42,6 +42,7 @@ public class Group extends BaseEntity {
     /**
      * 父id
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     @Excel(name = "父id")
     private Long parentId;
 
@@ -55,6 +56,5 @@ public class Group extends BaseEntity {
      *
      */
     @Excel(name = "排序")
-    private Long orderNum;
-
+    private Integer orderNum;
 }

@@ -50,6 +50,11 @@
         where group_id = #{groupId}
     </select>
 
+    <select id="selectGroupByParentId" resultType="com.lms.common.core.domain.entity.Group">
+        <include refid="selectGroupVo"/>
+        where parent_id = #{parentId}
+    </select>
+
     <insert id="insertGroup" parameterType="Group">
         insert into t_group
         <trim prefix="(" suffix=")" suffixOverrides=",">
