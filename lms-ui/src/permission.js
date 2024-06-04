@@ -9,6 +9,9 @@ import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
 
+
+
+
 NProgress.configure({ showSpinner: false });
 
 const whiteList = ['/login', '/auth-redirect', '/bind', '/register'];

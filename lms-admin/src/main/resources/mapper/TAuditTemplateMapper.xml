@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.TAuditTemplateMapper">
+
+    <resultMap type="TAuditTemplate" id="TAuditTemplateResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="image" column="image"/>
+        <result property="description" column="description"/>
+
+        <association
+                property="fieldList"
+                select="com.lms.web.mapper.TAuditTemplateFieldMapper.selectTAuditTemplateFieldByTemplateId"
+                column="id"
+        >
+        </association>
+    </resultMap>
+
+    <sql id="selectTAuditTemplateVo">
+        select id, name, image, description
+        from t_audit_template
+    </sql>
+
+    <select id="selectTAuditTemplateList" parameterType="TAuditTemplate" resultMap="TAuditTemplateResult">
+        <include refid="selectTAuditTemplateVo"/>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="image != null  and image != ''">and image = #{image}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+        </where>
+    </select>
+
+    <select id="selectTAuditTemplateById" parameterType="Long" resultMap="TAuditTemplateResult">
+        <include refid="selectTAuditTemplateVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTAuditTemplate" parameterType="TAuditTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into t_audit_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="image != null">image,</if>
+            <if test="description != null">description,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="image != null">#{image},</if>
+            <if test="description != null">#{description},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTAuditTemplate" parameterType="TAuditTemplate">
+        update t_audit_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="description != null">description = #{description},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTAuditTemplateById" parameterType="Long">
+        delete
+        from t_audit_template
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteTAuditTemplateByIds" parameterType="String">
+        delete from t_audit_template where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

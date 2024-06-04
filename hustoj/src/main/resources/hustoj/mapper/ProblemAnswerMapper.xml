@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.hustoj.mapper.ProblemAnswerMapper">
+    <resultMap id="ProblemAnswerResult" type="com.lms.hustoj.domain.ProblemAnswer">
+        <id property="id" column="id"/>
+        <result property="problemId" column="problem_id"/>
+        <result property="value" column="value"/>
+        <result property="correct" column="correct"/>
+    </resultMap>
+
+    <sql id="selectProblemAnswerVo">
+        SELECT id,
+               problem_id,
+               `value`,
+               correct
+        FROM problem_ans
+    </sql>
+
+    <select id="selectProblemAnswerList" resultMap="ProblemAnswerResult">
+        <include refid="selectProblemAnswerVo"/>
+        <where>
+            <if test="id != null">and id = #{id}</if>
+            <if test="problemId != null">and problem_id = #{problemId}</if>
+            <if test="value != null and value != ''">and `value` = #{value}</if>
+            <if test="correct != null">and correct = #{correct}</if>
+        </where>
+        order by id
+    </select>
+
+
+    <insert id="insertProblemAnswerList">
+        INSERT INTO problem_ans (problem_id,value,correct) VALUES
+        <foreach collection="answerList" separator="," item="item">
+            (#{item.problemId},#{item.value},#{item.correct})
+        </foreach>
+    </insert>
+
+</mapper>

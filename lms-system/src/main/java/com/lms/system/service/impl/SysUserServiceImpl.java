@@ -2,6 +2,9 @@ package com.lms.system.service.impl;
 
 import com.lms.common.annotation.DataScope;
 import com.lms.common.constant.UserConstants;
+import com.lms.common.core.domain.UserStatisticsMajorEntity;
+import com.lms.common.core.domain.UserStatisticsYearNumberEntity;
+import com.lms.common.core.domain.entity.Pair;
 import com.lms.common.core.domain.entity.SysRole;
 import com.lms.common.core.domain.entity.SysUser;
 import com.lms.common.exception.ServiceException;
@@ -56,6 +59,11 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Autowired
     protected Validator validator;
+
+    @Override
+    public List<Pair<String, Long>> selectGroupUserCount() {
+        return userMapper.selectGroupUserCount();
+    }
 
     /**
      * 根据条件分页查询用户列表
@@ -483,5 +491,16 @@ public class SysUserServiceImpl implements ISysUserService {
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    @Override
+    public List<UserStatisticsMajorEntity> statisticsMajor() {
+
+        return userMapper.statisticsMajor();
+    }
+
+    @Override
+    public List<UserStatisticsYearNumberEntity> statisticsYearNumber() {
+        return userMapper.statisticsYearNumber();
     }
 }

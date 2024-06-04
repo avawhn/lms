@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.TAuditTemplateFieldMapper">
+
+    <resultMap type="TAuditTemplateField" id="TAuditTemplateFieldResult">
+        <result property="id" column="id"/>
+        <result property="templateId" column="template_id"/>
+        <result property="label" column="label"/>
+        <result property="componentName" column="component_name"/>
+        <result property="placeholder" column="placeholder"/>
+        <result property="required" column="required"/>
+    </resultMap>
+
+    <sql id="selectTAuditTemplateFieldVo">
+        select id, template_id, label, component_name, placeholder, required
+        from t_audit_template_field
+    </sql>
+
+    <select id="selectTAuditTemplateFieldList" parameterType="TAuditTemplateField"
+            resultMap="TAuditTemplateFieldResult">
+        <include refid="selectTAuditTemplateFieldVo"/>
+        <where>
+            <if test="templateId != null ">and template_id = #{templateId}</if>
+            <if test="label != null  and label != ''">and label = #{label}</if>
+            <if test="componentName != null  and componentName != ''">and component_name like concat('%',
+                #{componentName}, '%')
+            </if>
+            <if test="placeholder != null  and placeholder != ''">and placeholder = #{placeholder}</if>
+            <if test="required != null ">and required = #{required}</if>
+        </where>
+    </select>
+
+    <select id="selectTAuditTemplateFieldById" parameterType="Long" resultMap="TAuditTemplateFieldResult">
+        <include refid="selectTAuditTemplateFieldVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectTAuditTemplateFieldByTemplateId"
+            resultMap="TAuditTemplateFieldResult">
+        <include refid="selectTAuditTemplateFieldVo"/>
+        where template_id = #{templateId}
+    </select>
+
+    <insert id="insertTAuditTemplateField" parameterType="TAuditTemplateField" useGeneratedKeys="true" keyProperty="id">
+        insert into t_audit_template_field
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">template_id,</if>
+            <if test="label != null and label != ''">label,</if>
+            <if test="componentName != null and componentName != ''">component_name,</if>
+            <if test="placeholder != null">placeholder,</if>
+            <if test="required != null">required,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateId != null">#{templateId},</if>
+            <if test="label != null and label != ''">#{label},</if>
+            <if test="componentName != null and componentName != ''">#{componentName},</if>
+            <if test="placeholder != null">#{placeholder},</if>
+            <if test="required != null">#{required},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertTAuditTemplateFieldList">
+        insert into t_audit_template_field
+        (template_id,label,component_name,placeholder,required)
+        values
+        <foreach collection="fieldList" item="item" separator=",">
+            (#{templateId}, #{item.label},#{item.componentName},#{item.placeholder},#{item.required})
+        </foreach>
+    </insert>
+
+    <update id="updateTAuditTemplateField" parameterType="TAuditTemplateField">
+        update t_audit_template_field
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="label != null and label != ''">label = #{label},</if>
+            <if test="componentName != null and componentName != ''">component_name = #{componentName},</if>
+            <if test="placeholder != null">placeholder = #{placeholder},</if>
+            <if test="required != null">required = #{required},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTAuditTemplateFieldById" parameterType="Long">
+        delete
+        from t_audit_template_field
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteTAuditTemplateFieldByIds" parameterType="String">
+        delete from t_audit_template_field where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,5 +1,7 @@
 package com.lms.common.core.domain.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.lms.common.annotation.Excel;
 import com.lms.common.annotation.Excels;
 import com.lms.common.core.domain.BaseEntity;
@@ -24,7 +26,7 @@ public class SysUser extends BaseEntity implements Cloneable {
     /**
      * 用户ID
      */
-    @Excel(name = "用户序号", cellType = Excel.ColumnType.NUMERIC, prompt = "用户编号")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     /**
@@ -34,7 +36,10 @@ public class SysUser extends BaseEntity implements Cloneable {
     private Long deptId;
 
     @Excel(name = "分组编号", type = Excel.Type.IMPORT)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long groupId;
+
+    private Integer majorId;
 
     /**
      * 用户账号
@@ -173,12 +178,21 @@ public class SysUser extends BaseEntity implements Cloneable {
     private Boolean inService;
 
 
+
     public SysUser() {
 
     }
 
     public SysUser(Long userId) {
         this.userId = userId;
+    }
+
+    public Integer getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(Integer majorId) {
+        this.majorId = majorId;
     }
 
     public Boolean getInService() {

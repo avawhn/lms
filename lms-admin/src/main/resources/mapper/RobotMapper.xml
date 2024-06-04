@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.RobotMapper">
+
+    <resultMap type="Robot" id="RobotResult">
+        <result property="id" column="id"/>
+        <result property="robotName" column="robot_name"/>
+        <result property="grade" column="grade"/>
+        <result property="workContent" column="work_content"/>
+        <result property="image" column="image"/>
+    </resultMap>
+
+    <sql id="selectRobotVo">
+        select id, robot_name, grade, work_content, image
+        from robot
+    </sql>
+
+    <select id="selectRobotList" parameterType="Robot" resultMap="RobotResult">
+        <include refid="selectRobotVo"/>
+        <where>
+            <if test="robotName != null  and robotName != ''">and robot_name like concat('%', #{robotName}, '%')</if>
+            <if test="grade != null ">and grade = #{grade}</if>
+            <if test="workContent != null  and workContent != ''">and work_content = #{workContent}</if>
+            <if test="image != null  and image != ''">and image = #{image}</if>
+        </where>
+        order by grade desc
+    </select>
+
+    <select id="selectRobotById" parameterType="Long" resultMap="RobotResult">
+        <include refid="selectRobotVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRobot" parameterType="Robot" useGeneratedKeys="true" keyProperty="id">
+        insert into robot
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="robotName != null and robotName != ''">robot_name,</if>
+            <if test="grade != null">grade,</if>
+            <if test="workContent != null and workContent != ''">work_content,</if>
+            <if test="image != null">image,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="robotName != null and robotName != ''">#{robotName},</if>
+            <if test="grade != null">#{grade},</if>
+            <if test="workContent != null and workContent != ''">#{workContent},</if>
+            <if test="image != null">#{image},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRobot" parameterType="Robot">
+        update robot
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="robotName != null and robotName != ''">robot_name = #{robotName},</if>
+            <if test="grade != null">grade = #{grade},</if>
+            <if test="workContent != null and workContent != ''">work_content = #{workContent},</if>
+            <if test="image != null">image = #{image},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRobotById" parameterType="Long">
+        delete
+        from robot
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteRobotByIds" parameterType="String">
+        delete from robot where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

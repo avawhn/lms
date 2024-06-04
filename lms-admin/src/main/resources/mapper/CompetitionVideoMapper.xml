@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.CompetitionVideoMapper">
+
+    <resultMap type="CompetitionVideo" id="CompetitionVideoResult">
+        <result property="id" column="id"/>
+        <result property="url" column="url"/>
+        <result property="grade" column="grade"/>
+    </resultMap>
+
+    <sql id="selectCompetitionVideoVo">
+        select id, url, grade
+        from competition_video
+    </sql>
+
+    <select id="selectCompetitionVideoList" parameterType="CompetitionVideo" resultMap="CompetitionVideoResult">
+        <include refid="selectCompetitionVideoVo"/>
+        <where>
+            <if test="url != null  and url != ''">and url = #{url}</if>
+            <if test="grade != null ">and grade = #{grade}</if>
+        </where>
+    </select>
+
+    <select id="selectCompetitionVideoById" parameterType="Long" resultMap="CompetitionVideoResult">
+        <include refid="selectCompetitionVideoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCompetitionVideo" parameterType="CompetitionVideo">
+        insert into competition_video
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="url != null and url != ''">url,</if>
+            <if test="grade != null">grade,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="url != null and url != ''">#{url},</if>
+            <if test="grade != null">#{grade},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCompetitionVideo" parameterType="CompetitionVideo">
+        update competition_video
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="url != null and url != ''">url = #{url},</if>
+            <if test="grade != null">grade = #{grade},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCompetitionVideoById" parameterType="Long">
+        delete
+        from competition_video
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteCompetitionVideoByIds" parameterType="String">
+        delete from competition_video where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

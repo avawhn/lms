@@ -93,9 +93,9 @@ public class MinIOController {
         return R.ok();
     }
 
-    @GetMapping("/obj/preview/{bucket}/{obj}")
-    public R<String> getPreviewUrl(@PathVariable("bucket") String bucket,
-                                   @PathVariable("obj") String obj) {
+    @GetMapping("/obj/preview")
+    public R<String> getPreviewUrl(@RequestParam("bucket") String bucket,
+                                   @RequestParam("obj") String obj) {
         return R.ok(minioUtils
                 .generatePresignedObjectUrl(Method.GET,
                         bucket, obj,
@@ -105,14 +105,13 @@ public class MinIOController {
         );
     }
 
-    @DeleteMapping("/obj/{bucket}/{obj}")
-    public R<String> removeObject(@PathVariable("bucket") String bucket,
-                                  @PathVariable("obj") String obj) {
-        minioUtils.removeObject(bucket, obj);
+    @DeleteMapping("/obj")
+    public R<String> removeObject(@RequestBody HashMap<String,String> params) {
+        minioUtils.removeObject(params.get("bucket"), params.get("filename"));
         return R.ok();
     }
 
-    @DeleteMapping("/obj")
+    @DeleteMapping("/objs")
     public R<String> removeObjects() {
         return R.ok();
     }

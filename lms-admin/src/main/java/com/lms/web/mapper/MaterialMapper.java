@@ -1,6 +1,7 @@
 package com.lms.web.mapper;
 
 import com.lms.common.core.domain.entity.Material;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -58,4 +59,7 @@ public interface MaterialMapper {
      * @return 结果
      */
     public int deleteMaterialByMaterialIds(Long[] ids);
+
+    int updateMaterialCount(@Param("materialId") Long materialId,
+                            @Param("number") int number);
 }

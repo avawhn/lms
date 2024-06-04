@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.AwardMapper">
+
+    <resultMap type="Award" id="AwardResult">
+        <result property="id" column="id"/>
+        <result property="grade" column="grade"/>
+        <result property="content" column="content"/>
+        <result property="image" column="image"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+
+    <resultMap type="Award" id="AwardDetailResult">
+        <result property="id" column="id"/>
+        <result property="grade" column="grade"/>
+        <result property="content" column="content"/>
+        <result property="image" column="image"/>
+        <result property="description" column="description"/>
+        <collection property="robotList" ofType="com.lms.common.core.domain.entity.Robot">
+            <id property="id" column="robot_id"/>
+            <result property="robotName" column="robot_name"/>
+            <result property="grade" column="grade"/>
+            <result property="workContent" column="work_content"/>
+            <result property="image" column="robot_image"/>
+        </collection>
+    </resultMap>
+
+    <sql id="selectAwardVo">
+        select id, grade, content, image, description
+        from award
+    </sql>
+
+    <sql id="selectAwardDetailVo">
+        SELECT a.id,
+               a.grade,
+               a.content,
+               a.image,
+               a.description,
+               r.id    as robot_id,
+               r.robot_name,
+               r.work_content,
+               r.image as robot_image
+        FROM award a
+                 LEFT JOIN robot r ON a.grade = r.grade
+    </sql>
+
+    <select id="selectAwardList" parameterType="Award" resultMap="AwardResult">
+        <include refid="selectAwardVo"/>
+        <where>
+            <if test="grade != null ">and grade = #{grade}</if>
+            <if test="content != null  and content != ''">and content = #{content}</if>
+            <if test="image != null  and image != ''">and image = #{image}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+        </where>
+        order by grade desc
+    </select>
+
+    <select id="selectAwardById" parameterType="Long" resultMap="AwardResult">
+        <include refid="selectAwardVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLatestAward" resultMap="AwardResult">
+        <include refid="selectAwardVo"/>
+        order by grade desc limit 1
+    </select>
+
+    <select id="selectAllGrade" resultMap="AwardResult">
+        select id, grade
+        from award
+    </select>
+
+    <select id="selectAwardDetailById" resultMap="AwardDetailResult">
+        <include refid="selectAwardDetailVo"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertAward" parameterType="Award" useGeneratedKeys="true" keyProperty="id">
+        insert into award
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="grade != null">grade,</if>
+            <if test="content != null and content != ''">content,</if>
+            <if test="image != null">image,</if>
+            <if test="description != null">description,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="grade != null">#{grade},</if>
+            <if test="content != null and content != ''">#{content},</if>
+            <if test="image != null">#{image},</if>
+            <if test="description != null">#{description},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAward" parameterType="Award">
+        update award
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="grade != null">grade = #{grade},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+            <if test="image != null">image = #{image},</if>
+            <if test="description != null">description = #{description},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAwardById" parameterType="Long">
+        delete
+        from award
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAwardByIds" parameterType="String">
+        delete from award where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

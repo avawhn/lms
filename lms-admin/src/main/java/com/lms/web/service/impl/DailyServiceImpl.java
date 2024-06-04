@@ -4,6 +4,7 @@ import com.lms.common.core.domain.AjaxResult;
 import com.lms.common.core.domain.entity.Daily;
 import com.lms.common.core.domain.entity.SysUser;
 import com.lms.common.utils.DateUtils;
+import com.lms.common.utils.SecurityUtils;
 import com.lms.system.mapper.SysUserMapper;
 import com.lms.web.mapper.DailyMapper;
 import com.lms.web.service.IDailyService;
@@ -83,6 +84,13 @@ public class DailyServiceImpl implements IDailyService {
         Date now = DateUtils.getNowDate();
         daily.setCreateTime(now);
         daily.setUpdateTime(now);
+
+
+        // 设置创建数据的用户以及创建时间
+        String createBy = SecurityUtils.getLoginUser().getUser().getNickName();
+        daily.setCreateBy(createBy);
+        daily.setCreateTime(DateUtils.getNowDate());
+
         dailyMapper.insertDaily(daily);
         return AjaxResult.success();
     }
@@ -97,10 +105,17 @@ public class DailyServiceImpl implements IDailyService {
     public AjaxResult updateDaily(Daily daily) {
         Daily d = dailyMapper.selectDailyByUserIdAndDate(daily.getUserId(), daily.getDate());
         if (d != null && !d.getId().equals(daily.getId())) {
-            String msg = d.getNickName() + SF.format(daily.getDate()) + "日报已存在";
-            return AjaxResult.error(msg);
+            // String msg = d.getNickName() + SF.format(daily.getDate()) + "日报已存在";
+            // return AjaxResult.error(msg);
+            return AjaxResult.error("");
         }
+
+        // 设置更新数据的用户以及更新时间
+        String updateBy = SecurityUtils.getLoginUser().getUser().getNickName();
+        daily.setUpdateBy(updateBy);
         daily.setUpdateTime(DateUtils.getNowDate());
+
+
         int count = dailyMapper.updateDaily(daily);
         return count == 0 ? AjaxResult.error("更新失败") : AjaxResult.success();
     }

@@ -46,6 +46,22 @@ public class SysUserController extends BaseController {
     @Autowired
     private ISysPostService postService;
 
+
+    @GetMapping("/group/count")
+    public AjaxResult groupUser() {
+        return AjaxResult.success(userService.selectGroupUserCount());
+    }
+
+    @GetMapping("/statistics/major")
+    public AjaxResult statisticsMajor(){
+        return success(userService.statisticsMajor());
+    }
+
+    @GetMapping("/statistics/year/number")
+    public AjaxResult statisticsYearNumber(){
+        return success(userService.statisticsYearNumber());
+    }
+
     /**
      * 获取用户列表
      */

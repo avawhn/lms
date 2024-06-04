@@ -1,5 +1,6 @@
 package com.lms.web.service;
 
+import com.lms.common.core.domain.StatisticsCountEntity;
 import com.lms.common.core.domain.entity.Device;
 
 import java.util.List;
@@ -58,4 +59,6 @@ public interface IDeviceService {
      * @return 结果
      */
     public int deleteDeviceById(Long id);
+
+    List<StatisticsCountEntity> statisticsTypeCount();
 }

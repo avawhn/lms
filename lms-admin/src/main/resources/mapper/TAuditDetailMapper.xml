@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.TAuditDetailMapper">
+
+    <resultMap type="TAuditDetail" id="TAuditDetailResult">
+        <result property="id" column="id"/>
+        <result property="label" column="label"/>
+        <result property="value" column="value"/>
+        <result property="recordId" column="record_id"/>
+    </resultMap>
+
+
+    <sql id="selectTAuditDetailVo">
+        select id, label, value, record_id
+        from t_audit_detail
+    </sql>
+
+    <select id="selectTAuditDetailList" parameterType="TAuditDetail" resultMap="TAuditDetailResult">
+        <include refid="selectTAuditDetailVo"/>
+        <where>
+            <if test="label != null  and label != ''">and label = #{label}</if>
+            <if test="value != null  and value != ''">and value = #{value}</if>
+            <if test="recordId != null ">and record_id = #{recordId}</if>
+        </where>
+    </select>
+
+    <select id="selectTAuditDetailById" parameterType="Long" resultMap="TAuditDetailResult">
+        <include refid="selectTAuditDetailVo"/>
+        where id = #{id}
+    </select>
+
+
+    <select id="selectTAuditDetailByRecordId" resultMap="TAuditDetailResult">
+        <include refid="selectTAuditDetailVo"/>
+        where record_id = #{recordId}
+    </select>
+
+
+    <insert id="insertTAuditDetail" parameterType="TAuditDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into t_audit_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="label != null and label != ''">label,</if>
+            <if test="value != null and value != ''">value,</if>
+            <if test="recordId != null">record_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="label != null and label != ''">#{label},</if>
+            <if test="value != null and value != ''">#{value},</if>
+            <if test="recordId != null">#{recordId},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertTAuditDetailList">
+        INSERT INTO t_audit_detail (label,value,record_id) VALUES
+        <foreach collection="detail" item="item" separator=",">
+            (#{item.label},#{item.value},#{item.recordId})
+        </foreach>
+    </insert>
+
+
+    <update id="updateTAuditDetail" parameterType="TAuditDetail">
+        update t_audit_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="label != null and label != ''">label = #{label},</if>
+            <if test="value != null and value != ''">value = #{value},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTAuditDetailById" parameterType="Long">
+        delete
+        from t_audit_detail
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteTAuditDetailByIds" parameterType="String">
+        delete from t_audit_detail where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

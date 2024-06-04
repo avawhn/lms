@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.MaterialChangeRecordMapper">
+    <resultMap type="MaterialChangeRecord" id="MaterialChangeRecordResult">
+        <result property="id" column="id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="number" column="number"/>
+        <result property="work" column="work"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+
+        <association property="user" resultMap="com.lms.system.mapper.SysUserMapper.SysUserResult"/>
+        <association property="material" resultMap="com.lms.web.mapper.MaterialMapper.MaterialResult"/>
+    </resultMap>
+
+
+    <resultMap id="StatisticsBodyResult" type="materialChangeStatisticsEntity">
+        <result property="materialId" column="material_id"/>
+        <result property="materialName" column="material_name"/>
+        <result property="number" column="number"/>
+    </resultMap>
+
+    <sql id="selectMaterialChangeRecordVo">
+        select id, material_id, user_id, number, type, work, create_time
+        from material_change_record
+    </sql>
+
+    <sql id="selectMaterialChangeRecordDetailVo">
+        SELECT mr.id,
+               mr.material_id,
+               mr.user_id,
+               mr.number,
+               mr.work,
+               mr.type,
+               mr.create_time,
+               m.material_name,
+               u.nick_name
+        FROM material_change_record mr
+                 INNER JOIN t_material m ON mr.material_id = m.material_id
+                 INNER JOIN sys_user u ON mr.user_id = u.user_id
+    </sql>
+
+
+    <!-- <select id="selectMaterialChangeRecordList" parameterType="MaterialChangeRecord" -->
+    <!--         resultMap="MaterialChangeRecordResult"> -->
+    <!--     <include refid="selectMaterialChangeRecordVo"/> -->
+    <!--     <where> -->
+    <!--         <if test="materialId != null ">and material_id = #{materialId}</if> -->
+    <!--         <if test="userId != null ">and user_id = #{userId}</if> -->
+    <!--         <if test="number != null ">and number = #{number}</if> -->
+    <!--         <if test="type != null  and type != ''">and type = #{type}</if> -->
+    <!--     </where> -->
+    <!-- </select> -->
+
+    <select id="selectMaterialChangeRecordList" parameterType="MaterialChangeRecord"
+            resultMap="MaterialChangeRecordResult">
+        <include refid="selectMaterialChangeRecordDetailVo"/>
+        <where>
+            <if test="materialId != null ">and mr.material_id = #{materialId}</if>
+            <if test="userId != null ">and mr.user_id = #{userId}</if>
+            <if test="number != null ">and mr.number = #{number}</if>
+            <if test="type != null  and type != ''">and mr.type = #{type}</if>
+        </where>
+    </select>
+
+
+    <select id="selectMaterialChangeRecordById" parameterType="Long" resultMap="MaterialChangeRecordResult">
+        <include refid="selectMaterialChangeRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectAllYear" resultType="java.lang.Integer">
+        SELECT DISTINCT YEAR(create_time) as year
+        FROM material_change_record
+    </select>
+
+    <select id="statisticsYear" resultMap="StatisticsBodyResult">
+        SELECT mr.material_id,
+        SUM(mr.number) AS number,
+        m.material_name
+        FROM material_change_record mr
+        INNER JOIN t_material m ON mr.material_id = m.material_id
+        <where>
+            <if test="year != null">and YEAR(mr.create_time) = #{year}</if>
+            <if test="type != null">and mr.type =#{type}</if>
+        </where>
+        GROUP BY mr.material_id
+    </select>
+
+    <insert id="insertMaterialChangeRecord" parameterType="MaterialChangeRecord">
+        insert into material_change_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="number != null">number,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="work != null and work != ''">work,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="number != null">#{number},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="work != null and work != ''">#{work},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMaterialChangeRecord" parameterType="MaterialChangeRecord">
+        update material_change_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="work != null and work != ''">work = #{work}</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMaterialChangeRecordById" parameterType="Long">
+        delete
+        from material_change_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMaterialChangeRecordByIds" parameterType="String">
+        delete from material_change_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

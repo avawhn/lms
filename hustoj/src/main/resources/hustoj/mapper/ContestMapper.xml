@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.hustoj.mapper.ContestMapper">
+    <resultMap id="ContestResult" type="com.lms.hustoj.domain.Contest">
+        <id property="contestId" column="contest_id"/>
+        <result property="title" column="title"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="defunct" column="defunct"/>
+        <result property="description" column="description"/>
+        <result property="langmask" column="langmask"/>
+        <result property="password" column="password"/>
+        <result property="userId" column="user_id"/>
+        <result property="contestTime" column="contest_time"/>
+        <result property="totalScore" column="total_score"/>
+    </resultMap>
+
+
+    <sql id="selectContestVo">
+        SELECT contest_id,
+               title,
+               start_time,
+               end_time,
+               defunct,
+               description,
+               private,
+               langmask,
+               `password`,
+               user_id,
+               contest_time,
+               total_score
+        FROM contest
+    </sql>
+
+
+    <select id="selectContestByContestId" resultMap="ContestResult">
+        <include refid="selectContestVo"/>
+        where contest_id = #{contestId}
+    </select>
+
+    <select id="selectContestList" resultMap="ContestResult">
+        <include refid="selectContestVo"/>
+        <where>
+            <if test="contestId != null">and contest_id = #{contestId}</if>
+            <if test="title != null and title != ''">and title = #{title}</if>
+            <if test="startTime != null">and start_time = #{startTime}</if>
+            <if test="endTime != null">and end_time = #{endTime}</if>
+            <if test="defunct != null">and defunct = #{defunct}</if>
+            <if test="description != null">and description = #{description}</if>
+            <if test="langmask != null">and langmask = #{langmask}</if>
+            <if test="userId != null">and find_in_set(#{userId},user_id)</if>
+        </where>
+    </select>
+
+    <insert id="insertContest" useGeneratedKeys="true" keyColumn="contest_id" keyProperty="contestId">
+        INSERT INTO contest
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="contestId != null">contest_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="defunct != null">defunct,</if>
+            <if test="description != null and description != ''">`description`,</if>
+            <if test="langmask != null">langmask,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="contestTime != null">contest_time,</if>
+            <if test="totalScore != null">total_score,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="contestId != null">#{contestId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="defunct != null">#{defunct},</if>
+            <if test="description != null and description != ''">#{description},</if>
+            <if test="langmask != null">#{langmask},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="contestTime != null">#{contestTime},</if>
+            <if test="totalScore != null">#{totalScore},</if>
+        </trim>
+    </insert>
+
+
+    <delete id="deleteContestByContestIds">
+        delete from contest where contest_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

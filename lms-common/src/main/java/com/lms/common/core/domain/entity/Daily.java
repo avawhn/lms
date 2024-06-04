@@ -1,7 +1,10 @@
 package com.lms.common.core.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.lms.common.annotation.Excel;
+import com.lms.common.annotation.Excels;
 import com.lms.common.core.domain.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,16 +27,14 @@ public class Daily extends BaseEntity {
     /**
      * 唯一标识
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
      * 用户id
      */
-    @Excel(name = "用户id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
-
-    @Excel(name = "用户姓名")
-    private String nickName;
 
     /**
      * 日期
@@ -47,6 +48,12 @@ public class Daily extends BaseEntity {
      */
     @Excel(name = "工作内容")
     private String content;
+
+
+    @Excels({
+            @Excel(name = "姓名", targetAttr = "nickName", type = Excel.Type.EXPORT)
+    })
+    private SysUser user;
 
 
     @Override

@@ -24,18 +24,173 @@
         <result property="judger" column="judger"/>
         <result property="remoteOj" column="remote_oj"/>
         <result property="remoteId" column="remote_id"/>
+        <association property="problem" resultMap="com.lms.hustoj.mapper.ProblemMapper.ProblemResult"/>
+    </resultMap>
+
+    <resultMap id="PassRateCountResult" type="com.lms.hustoj.domain.PassRateCount">
+        <result property="passRate" column="pass_rate"/>
+        <result property="count" column="count"/>
     </resultMap>
 
     <sql id="selectSolutionVo">
         SELECT solution_id,
                problem_id,
                user_id,
-               nick, `time`, memory, in_date, result, `language`, ip, contest_id, valid, num, code_length, judgetime, pass_rate, lint_error, judger, remote_oj, remote_id
+               nick,
+               `time`,
+               memory,
+               in_date,
+               result,
+               `language`,
+               ip,
+               contest_id,
+               valid,
+               num,
+               code_length,
+               judgetime,
+               pass_rate,
+               lint_error,
+               judger,
+               remote_oj,
+               remote_id
         FROM solution
     </sql>
 
-    <select id="selectSolutionBySolutionId" resultType="com.lms.hustoj.domain.Solution">
+    <select id="selectSolutionBySolutionId" resultMap="SolutionResult">
         <include refid="selectSolutionVo"/>
         where solution_id = #{solutionId}
     </select>
+
+    <select id="selectSolutionList" resultMap="SolutionResult">
+        <include refid="selectSolutionVo"/>
+        <where>
+            <if test="problemId != null">and problem_id = #{problemId}</if>
+            <if test="userId != null">and user_id = #{userId}</if>
+            <if test="nick != null">and nick = #{nick}</if>
+            <if test="time != null">and time = #{time}</if>
+            <if test="memory != null">and memory = #{memory}</if>
+            <if test="inDate != null">and in_date = #{inDate}</if>
+            <if test="result != null">and result = #{result}</if>
+            <if test="language != null">and language = #{language}</if>
+            <if test="ip != null">and ip = #{ip}</if>
+            <if test="contestId != null">and contest_id = #{contestId}</if>
+            <if test="valid != null">and valid = #{valid}</if>
+            <if test="num != null">and num = #{num}</if>
+            <if test="codeLength != null">and code_length = #{codeLength}</if>
+            <if test="judgetime != null">and judgetime = #{judgetime}</if>
+            <if test="passRate != null">and pass_rate = #{passRate}</if>
+            <if test="lintError != null">and lint_error = #{lintError}</if>
+            <if test="judger != null">and judger = #{judger}</if>
+            <if test="remoteOj != null">and remote_oj = #{remoteOj}</if>
+            <if test="remoteId != null">and remote_id = #{remoteId}</if>
+        </where>
+    </select>
+
+    <select id="selectSolutionRecordList" resultMap="SolutionResult">
+        SELECT s.solution_id,
+               s.problem_id,
+               s.user_id,
+               s.nick,
+               s.time,
+               s.memory,
+               s.in_date,
+               s.result,
+               s.`language`,
+               s.ip,
+               s.contest_id,
+               s.valid,
+               s.num,
+               s.code_length,
+               s.judgetime,
+               s.pass_rate,
+               s.lint_error,
+               s.judger,
+               p.title
+        FROM solution s
+                 INNER JOIN problem p ON s.problem_id = p.problem_id
+    </select>
+
+    <select id="selectPassRateCount" resultMap="PassRateCountResult">
+        SELECT pass_rate,
+               COUNT(user_id) as count
+        FROM solution
+        WHERE user_id = #{userId}
+        GROUP BY pass_rate
+    </select>
+
+    <insert id="insertSolution" useGeneratedKeys="true" keyProperty="solutionId">
+        INSERT INTO `solution`
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="problemId != null">`problem_id`,</if>
+            <if test="userId != null">`user_id`,</if>
+            <if test="nick != null">`nick`,</if>
+            <if test="time != null">`time`,</if>
+            <if test="memory != null">`memory`,</if>
+            <if test="inDate != null">`in_date`,</if>
+            <if test="result != null">`result`,</if>
+            <if test="language != null">`language`,</if>
+            <if test="ip != null">ip,</if>
+            <if test="contestId != null">contest_id,</if>
+            <if test="valid != null">valid,</if>
+            <if test="num != null">num,</if>
+            <if test="codeLength != null">code_length,</if>
+            <if test="judgetime != null">judgetime,</if>
+            <if test="passRate != null">pass_rate,</if>
+            <if test="lintError != null">lint_error,</if>
+            <if test="judger != null">judger,</if>
+            <if test="remoteOj != null">remote_oj,</if>
+            <if test="remoteId != null">remote_id,</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="problemId != null">#{problemId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="nick != null">#{nick},</if>
+            <if test="time != null">#{time},</if>
+            <if test="memory != null">#{memory},</if>
+            <if test="inDate != null">#{inDate},</if>
+            <if test="result != null">#{result},</if>
+            <if test="language != null">#{language},</if>
+            <if test="ip != null">#{ip},</if>
+            <if test="contestId != null">#{contestId},</if>
+            <if test="valid != null">#{valid},</if>
+            <if test="num != null">#{num},</if>
+            <if test="codeLength != null">#{codeLength},</if>
+            <if test="judgetime != null">#{judgetime},</if>
+            <if test="passRate != null">#{passRate},</if>
+            <if test="lintError != null">#{lintError},</if>
+            <if test="judger != null">#{judger},</if>
+            <if test="remoteOj != null">#{remoteOj},</if>
+            <if test="remoteId != null">#{remoteId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSolution">
+        UPDATE solution
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="problemId != null">problem_id = #{problemId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="nick != null">nick = #{nick},</if>
+            <if test="time != null">time = #{time},</if>
+            <if test="memory != null">memory = #{memory},</if>
+            <if test="inDate != null">in_date = #{inDate},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="ip != null">ip = #{ip},</if>
+            <if test="contestId != null">contest_id = #{contestId},</if>
+            <if test="valid != null">valid = #{valid},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="codeLength != null">code_length = #{codeLength},</if>
+            <if test="judgetime != null">judgetime = #{judgetime},</if>
+            <if test="passRate != null">pass_rate = #{passRate},</if>
+            <if test="lintError != null">lint_error = #{lintError},</if>
+            <if test="judger != null">judger = #{judger},</if>
+            <if test="remoteOj != null">remote_oj = #{remoteOj},</if>
+            <if test="remoteId != null">remote_id = #{remoteId},</if>
+        </trim>
+        WHERE solution_id = #{solutionId}
+
+    </update>
+
+
 </mapper>

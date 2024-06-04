@@ -1,10 +1,12 @@
 import { login, logout, getInfo } from "@/api/login";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import defAva from "@/assets/images/profile.jpg";
+import useAuditStore from "@/store/modules/audit";
 
 const useUserStore = defineStore("user", {
     state: () => ({
         token: getToken(),
+        userId: null,
         name: "",
         avatar: "",
         roles: [],
@@ -35,6 +37,10 @@ const useUserStore = defineStore("user", {
                 getInfo()
                     .then((res) => {
                         const user = res.user;
+                        this.userId = user.userId;
+
+                        useAuditStore().getAudit(this.userId);
+
                         // const avatar = (user.avatar == "" || user.avatar == null) ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
 
                         const avatar =

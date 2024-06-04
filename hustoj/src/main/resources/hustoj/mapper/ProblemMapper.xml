@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.hustoj.mapper.ProblemMapper">
+    <resultMap id="ProblemResult" type="com.lms.hustoj.domain.Problem">
+        <id property="problemId" column="problem_id"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="input" column="input"/>
+        <result property="output" column="output"/>
+        <result property="sampleInput" column="sample_input"/>
+        <result property="sampleOutput" column="sample_output"/>
+        <result property="spj" column="spj"/>
+        <result property="hint" column="hint"/>
+        <result property="source" column="source"/>
+        <result property="inDate" column="in_date"/>
+        <result property="timeLimit" column="time_limit"/>
+        <result property="memoryLimit" column="memory_limit"/>
+        <result property="defunct" column="defunct"/>
+        <result property="accepted" column="accepted"/>
+        <result property="submit" column="submit"/>
+        <result property="solved" column="solved"/>
+        <result property="remoteOj" column="remote_oj"/>
+        <result property="remoteId" column="remote_id"/>
+        <result property="type" column="type"/>
+        <association property="answerList" resultMap="com.lms.hustoj.mapper.ProblemAnswerMapper.ProblemAnswerResult"/>
+    </resultMap>
+
+    <sql id="selectProblemVo">
+        SELECT problem_id,
+               title,
+               description,
+               input,
+               output,
+               sample_input,
+               sample_output,
+               spj,
+               hint,
+               source,
+               in_date,
+               time_limit,
+               memory_limit,
+               defunct,
+               accepted,
+               submit,
+               solved,
+               remote_oj,
+               remote_id,
+               type
+        FROM problem
+    </sql>
+
+    <select id="selectProblemList" resultMap="ProblemResult">
+        <include refid="selectProblemVo"/>
+        <where>
+            <if test="problemId != null">and problem_id = #{problemId}</if>
+            <if test="title != null">and title = #{title}</if>
+            <if test="description != null">and description = #{description}</if>
+            <if test="input != null">and input = #{input}</if>
+            <if test="output != null">and output = #{output}</if>
+            <if test="sampleInput != null">and sample_input = #{sampleInput}</if>
+            <if test="sampleOutput != null">and sample_output = #{sampleOutput}</if>
+            <if test="spj != null">and spj = #{spj}</if>
+            <if test="hint != null">and hint = #{hint}</if>
+            <if test="source != null">and source = #{source}</if>
+            <if test="inDate != null">and in_date = #{inDate}</if>
+            <if test="timeLimit != null">and time_limit = #{timeLimit}</if>
+            <if test="memoryLimit != null">and memory_limit = #{memoryLimit}</if>
+            <if test="defunct != null">and defunct = #{defunct}</if>
+            <if test="accepted != null">and accepted = #{accepted}</if>
+            <if test="submit != null">and submit = #{submit}</if>
+            <if test="solved != null">and solved = #{solved}</if>
+            <if test="remoteOj != null">and remote_oj = #{remoteOj}</if>
+            <if test="remoteId != null">and remote_id = #{remoteId}</if>
+            <if test="type != null">and type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectProblemByProblemId" resultMap="ProblemResult">
+        <include refid="selectProblemVo"/>
+        where problem_id = #{id}
+    </select>
+
+    <select id="selectProblemListWithAns" resultMap="ProblemResult">
+        SELECT p.problem_id,
+        p.title,
+        p.description,
+        p.input,
+        p.output,
+        p.sample_input,
+        p.sample_output,
+        p.spj,
+        p.hint,
+        p.source,
+        p.in_date,
+        p.time_limit,
+        p.memory_limit,
+        p.defunct,
+        p.accepted,
+        p.submit,
+        p.solved,
+        p.remote_oj,
+        p.remote_id,
+        p.type,
+        a.`value`,
+        a.correct
+        FROM problem p
+        INNER JOIN problem_ans a ON p.problem_id = a.problem_id
+        <where>
+            <if test="problemId != null">and p.problem_id = #{problemId}</if>
+            <if test="title != null">and p.title = #{title}</if>
+            <if test="description != null">and p.description = #{description}</if>
+            <if test="input != null">and p.input = #{input}</if>
+            <if test="output != null">and p.output = #{output}</if>
+            <if test="sampleInput != null">and p.sample_input = #{sampleInput}</if>
+            <if test="sampleOutput != null">and p.sample_output = #{sampleOutput}</if>
+            <if test="spj != null">and p.spj = #{spj}</if>
+            <if test="hint != null">and p.hint = #{hint}</if>
+            <if test="source != null">and p.source = #{source}</if>
+            <if test="inDate != null">and p.in_date = #{inDate}</if>
+            <if test="timeLimit != null">and p.time_limit = #{timeLimit}</if>
+            <if test="memoryLimit != null">and p.memory_limit = #{memoryLimit}</if>
+            <if test="defunct != null">and p.defunct = #{defunct}</if>
+            <if test="accepted != null">and p.accepted = #{accepted}</if>
+            <if test="submit != null">and p.submit = #{submit}</if>
+            <if test="solved != null">and p.solved = #{solved}</if>
+            <if test="type != null">and p.type = #{type}</if>
+        </where>
+    </select>
+
+    <select id="selectProblemWithAnsByProblemId" resultMap="ProblemResult">
+        SELECT p.problem_id,
+               p.title,
+               p.description,
+               p.input,
+               p.output,
+               p.sample_input,
+               p.sample_output,
+               p.spj,
+               p.hint,
+               p.source,
+               p.in_date,
+               p.time_limit,
+               p.memory_limit,
+               p.defunct,
+               p.accepted,
+               p.submit,
+               p.solved,
+               p.remote_oj,
+               p.remote_id,
+               p.type,
+               a.`value`,
+               a.correct
+        FROM problem p
+                 LEFT JOIN problem_ans a ON p.problem_id = a.problem_id
+        WHERE p.problem_id = #{problemId}
+    </select>
+
+
+    <insert id="insertProblem" useGeneratedKeys="true" keyProperty="problemId">
+        INSERT INTO problem
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="problemId != null">problem_id,</if>
+            <if test="title != null and title != ''">title,</if>
+            <if test="description != null and description != ''">description,</if>
+            <if test="input != null and input != ''">input,</if>
+            <if test="output != null and output != ''">output,</if>
+            <if test="sampleInput != null and sampleInput != ''">sample_input,</if>
+            <if test="sampleOutput != null and sampleOutput != ''">sample_output,</if>
+            <if test="spj != null">spj,</if>
+            <if test="hint != null">hint,</if>
+            <if test="source != null and source != ''">source,</if>
+            <if test="inDate != null">in_date,</if>
+            <if test="timeLimit != null">time_limit,</if>
+            <if test="memoryLimit != null">memory_limit,</if>
+            <if test="defunct != null">defunct,</if>
+            <if test="accepted != null">accepted,</if>
+            <if test="submit != null">submit,</if>
+            <if test="solved != null">solved,</if>
+            <if test="remoteOj != null">remote_oj,</if>
+            <if test="remoteId != null">remote_id,</if>
+            <if test="type != null">type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="problemId != null">#{problemId},</if>
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="description != null and description != ''">#{description},</if>
+            <if test="input != null and input != ''">#{input},</if>
+            <if test="output != null and output != ''">#{output},</if>
+            <if test="sampleInput != null and sampleInput != ''">#{sampleInput},</if>
+            <if test="sampleOutput != null and sampleOutput != ''">#{sampleOutput},</if>
+            <if test="spj != null">#{spj},</if>
+            <if test="hint != null">#{hint},</if>
+            <if test="source != null and source != ''">#{source},</if>
+            <if test="inDate != null">#{inDate},</if>
+            <if test="timeLimit != null">#{timeLimit},</if>
+            <if test="memoryLimit != null">#{memoryLimit},</if>
+            <if test="defunct != null">#{defunct},</if>
+            <if test="accepted != null">#{accepted},</if>
+            <if test="submit != null">#{submit},</if>
+            <if test="solved != null">#{solved},</if>
+            <if test="remoteOj != null">#{remoteOj},</if>
+            <if test="remoteId != null">#{remoteId},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
+
+
+    <update id="updateProblem">
+        update problem
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="input != null">input = #{input},</if>
+            <if test="output != null">output = #{output},</if>
+            <if test="sampleInput != null">sample_input = #{sampleInput},</if>
+            <if test="sampleOutput != null">sample_output = #{sampleOutput},</if>
+            <if test="spj != null">spj = #{spj},</if>
+            <if test="hint != null">hint = #{hint},</if>
+            <if test="source != null">source = #{source},</if>
+            <if test="inDate != null">in_date = #{inDate},</if>
+            <if test="timeLimit != null">time_limit = #{timeLimit},</if>
+            <if test="memoryLimit != null">memory_limit = #{memoryLimit},</if>
+            <if test="defunct != null">defunct = #{defunct},</if>
+            <if test="accepted != null">accepted = #{accepted},</if>
+            <if test="submit != null">submit = #{submit},</if>
+            <if test="solved != null">solved = #{solved},</if>
+            <if test="remoteOj != null">remote_oj = #{remoteOj},</if>
+            <if test="remoteId != null">remote_id = #{remoteId},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where problem_id = #{problemId}
+    </update>
+
+
+    <delete id="deleteProblemByIds">
+        delete from problem where problem_id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

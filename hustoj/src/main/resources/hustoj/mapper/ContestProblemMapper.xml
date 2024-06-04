@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.hustoj.mapper.ContestProblemMapper">
+    <resultMap id="ContestProblemResult" type="com.lms.hustoj.domain.ContestProblem">
+        <result property="contestId" column="contest_id"/>
+        <result property="problemId" column="problem_id"/>
+        <result property="score" column="score"/>
+        <association
+                property="problem"
+                select="com.lms.hustoj.mapper.ProblemMapper.selectProblemWithAnsByProblemId"
+                column="problem_id"
+        />
+    </resultMap>
+
+    <select id="selectContestProblemList" resultMap="ContestProblemResult">
+        SELECT c.contest_id,
+        c.problem_id,
+        c.score,
+        p.title,
+        p.description,
+        p.input,
+        p.output,
+        p.sample_input,
+        p.sample_output,
+        p.time_limit,
+        p.memory_limit,
+        p.type
+        FROM contest_problem c
+        INNER JOIN problem p ON c.problem_id = p.problem_id
+        <where>
+            <if test="contestId != null">contest_id = #{contestId}</if>
+        </where>
+        order by p.type
+    </select>
+
+
+    <insert id="insertContestProblemList">
+        INSERT INTO contest_problem (contest_id,problem_id,score) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.contestId},#{item.problemId},#{item.score})
+        </foreach>
+    </insert>
+
+
+</mapper>

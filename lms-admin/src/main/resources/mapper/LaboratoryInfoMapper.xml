@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lms.web.mapper.LaboratoryInfoMapper">
+    <resultMap id="InfoBody" type="laboratoryInfo">
+        <id property="id" column="id"/>
+        <result property="value" column="value"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <sql id="selectInfoVo">
+        SELECT id, value, type
+        FROM laboratory_info
+    </sql>
+
+
+    <select id="selectInfoById" resultMap="InfoBody">
+        <include refid="selectInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectInfoList" resultMap="InfoBody">
+        <include refid="selectInfoVo"/>
+        where type = #{type}
+    </select>
+
+    <select id="selectLaboratoryName" resultType="java.lang.String">
+        SELECT value
+        FROM laboratory_info
+        WHERE type = '1'
+    </select>
+
+    <select id="selectLaboratoryDesc" resultType="java.lang.String">
+        SELECT value
+        FROM laboratory_info
+        WHERE type = '2'
+    </select>
+
+
+    <insert id="insertInfo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        INSERT INTO laboratory_info (value, type)
+        VALUES (#{value}, #{type})
+    </insert>
+
+    <update id="updateLaboratoryName">
+        UPDATE laboratory_info
+        SET value = #{name}
+        WHERE type = '1';
+    </update>
+
+    <update id="updateLaboratoryDesc">
+        UPDATE laboratory_info
+        SET value = #{desc}
+        WHERE type = '2';
+    </update>
+
+    <delete id="deleteInfoByIds">
+        DELETE FROM laboratory_info WHERE id IN
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

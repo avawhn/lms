@@ -30,6 +30,7 @@
         <result property="stuNum" column="stu_num"/>
         <result property="teamGrade" column="team_grade"/>
         <result property="inService" column="in_service"/>
+        <result property="majorId" column="major_id"/>
         <association property="dept" javaType="SysDept" resultMap="deptResult"/>
         <association property="group" javaType="Group" resultMap="com.lms.web.mapper.GroupMapper.GroupResult"/>
         <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
@@ -78,6 +79,7 @@
                u.stu_num,
                u.team_grade,
                u.in_service,
+               u.major_id,
                d.dept_id,
                d.parent_id,
                d.ancestors,
@@ -122,6 +124,7 @@
                u.stu_num,
                u.team_grade,
                u.in_service,
+               u.major_id,
                g.group_id,
                g.group_name,
                g.group_duty,
@@ -140,6 +143,20 @@
                  left join sys_role r on r.role_id = ur.role_id
     </sql>
 
+
+    <sql id="selectUserInSetVo">
+
+    </sql>
+
+
+    <select id="selectUserInSet" resultMap="SysUserResult">
+        SELECT sys_user.user_id,
+               sys_user.user_name,
+               sys_user.nick_name,
+               sys_user.phonenumber
+        FROM sys_user
+        WHERE FIND_IN_SET(user_id, #{userIds})
+    </select>
 
     <!-- <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult"> -->
     <!--     select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, -->
@@ -176,7 +193,7 @@
     <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.group_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
         u.status,u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,u.college,
-        u.major,u.grade,u.stu_num,u.team_grade,u.in_service,
+        u.major,u.grade,u.stu_num,u.team_grade,u.in_service,u.major_id,
         g.group_name,g.group_duty from
         sys_user u
         left join t_group g on u.group_id = g.group_id
@@ -321,22 +338,66 @@
         select user_id, user_name
         from sys_user
         where user_name = #{userName}
-          and del_flag = '0' limit 1
+          and del_flag = '0'
+        limit 1
     </select>
 
     <select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
         select user_id, phonenumber
         from sys_user
         where phonenumber = #{phonenumber}
-          and del_flag = '0' limit 1
+          and del_flag = '0'
+        limit 1
     </select>
 
     <select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
         select user_id, email
         from sys_user
         where email = #{email}
-          and del_flag = '0' limit 1
+          and del_flag = '0'
+        limit 1
     </select>
+
+
+    <resultMap id="GroupUserCountResult" type="pair">
+        <result property="key" column="group_name"/>
+        <result property="val" column="count"/>
+    </resultMap>
+
+    <resultMap id="UserStatisticsMajorResult" type="userStatisticsMajorEntity">
+        <result property="majorId" column="major_id"/>
+        <result property="num" column="number"/>
+    </resultMap>
+
+    <resultMap id="UserStatisticsYearNumber" type="userStatisticsYearNumberEntity">
+        <result property="year" column="year"/>
+        <result property="number" column="number"/>
+    </resultMap>
+
+
+    <select id="selectGroupUserCount" resultMap="GroupUserCountResult">
+        SELECT g.group_name,
+               COUNT(u.user_id) AS count
+        FROM sys_user u
+                 INNER JOIN t_group g
+                            ON u.group_id = g.group_id
+        WHERE del_flag = '0'
+        GROUP BY u.group_id
+    </select>
+
+    <select id="statisticsMajor" resultMap="UserStatisticsMajorResult">
+        select major_id, COUNT(user_id) as number
+        from sys_user
+        GROUP BY major_id
+    </select>
+
+    <select id="statisticsYearNumber" resultMap="UserStatisticsYearNumber">
+        select team_grade as year, COUNT(user_id) as number
+        from sys_user
+        GROUP BY team_grade
+        order by team_grade
+    </select>
+
 
     <insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
         insert into sys_user(

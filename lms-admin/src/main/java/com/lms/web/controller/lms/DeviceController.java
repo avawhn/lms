@@ -3,10 +3,10 @@ package com.lms.web.controller.lms;
 import com.lms.common.annotation.Log;
 import com.lms.common.core.controller.BaseController;
 import com.lms.common.core.domain.AjaxResult;
+import com.lms.common.core.domain.entity.Device;
 import com.lms.common.core.page.TableDataInfo;
 import com.lms.common.enums.BusinessType;
 import com.lms.common.utils.poi.ExcelUtil;
-import com.lms.common.core.domain.entity.Device;
 import com.lms.web.service.IDeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +28,8 @@ public class DeviceController extends BaseController {
     private IDeviceService deviceService;
 
 
+
+
     /**
      * 查询设备列表
      */
@@ -37,6 +39,11 @@ public class DeviceController extends BaseController {
         startPage();
         List<Device> list = deviceService.selectDeviceList(device);
         return getDataTable(list);
+    }
+
+    @GetMapping("/statistics/type/count")
+    public AjaxResult statisticsTypeCount(){
+        return success(deviceService.statisticsTypeCount());
     }
 
     /**

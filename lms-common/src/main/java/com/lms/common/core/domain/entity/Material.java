@@ -3,10 +3,14 @@ package com.lms.common.core.domain.entity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.lms.common.annotation.Excel;
+import com.lms.common.annotation.Excels;
 import com.lms.common.core.domain.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 物料管理对象 t_material
@@ -36,19 +40,13 @@ public class Material extends BaseEntity {
     /**
      * 组id
      */
-    @Excel(name = "组id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long groupId;
 
-    /**
-     * 组名称
-     */
-    @Excel(name = "组名称")
-    private String groupName;
 
     /**
      * 图片url
      */
-    @Excel(name = "图片url")
     private String imageUrl;
 
     /**
@@ -60,15 +58,24 @@ public class Material extends BaseEntity {
     /**
      * 负责人id
      */
-    @Excel(name = "负责人id")
-    private String chargePersonId;
+    private String userIds;
 
-    @Excel(name = "负责人名称")
-    private String chargePersonName;
 
-    /**
-     * 联系电话
-     */
-    @Excel(name = "联系电话")
-    private String telephone;
+    @Excels({
+            @Excel(name = "所属分组", targetAttr = "groupName", type = Excel.Type.EXPORT),
+    })
+    private Group group;
+
+    private List<SysUser> userList;
+
+
+    @Excel(name = "负责人")
+    private String userNames;
+
+
+    public void setUserList(List<SysUser> userList) {
+        this.userList = userList;
+        this.userNames = userList.stream().map(SysUser::getNickName).collect(Collectors.joining(","));
+    }
+
 }

@@ -10,8 +10,11 @@
         <result property="content" column="content"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
-        <result property="nickName" column="nick_name"/>
         <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="updateBy" column="update_by"/>
+
+        <association property="user" resultMap="com.lms.system.mapper.SysUserMapper.SysUserResult"/>
     </resultMap>
 
     <sql id="selectDailyVo">
@@ -20,7 +23,9 @@
                d.date,
                d.content,
                d.create_time,
+               d.create_by,
                d.update_time,
+               d.update_by,
                d.remark,
                u.nick_name
         from t_daily d
@@ -56,14 +61,18 @@
             <if test="date != null">date,</if>
             <if test="content != null and content != ''">content,</if>
             <if test="createTime != null">create_time,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
             <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null and updateBy != ''">update_by,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null">#{userId},</if>
             <if test="date != null">#{date},</if>
             <if test="content != null and content != ''">#{content},</if>
             <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null and updateBy != ''">#{updateBy},</if>
         </trim>
     </insert>
 
@@ -74,7 +83,9 @@
             <if test="date != null">date = #{date},</if>
             <if test="content != null and content != ''">content = #{content},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
         </trim>
         where id = #{id}
     </update>

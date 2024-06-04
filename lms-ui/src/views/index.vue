@@ -1,15 +1,16 @@
 <template>
-  <div class="app-container home">
-    <el-row :gutter="20">
-      <el-col :sm="24" :lg="12" style="padding-left: 20px">
-        <h2>高校机器人实验室管理系统</h2>
-        <p>
-          帮助管理人员更加高效地管理实验室资源，以及为实验室成员提供更优质的服务
-        </p>
-        <p>
+    <div class="app-container home">
+        <el-row :gutter="20">
+            <el-col :sm="24" :lg="12" style="padding-left: 20px">
+                <h2 style="color: aliceblue;">高校机器人实验室管理系统</h2>
+                <p style="color: aliceblue;">
+                    帮助管理人员更加高效地管理实验室资源，以及为实验室成员提供更优质的服务
+                </p>
+                <!-- <p>
           <b>当前版本:</b> <span>v{{ version }}</span>
-        </p>
-        <!-- <p>
+        </p> -->
+
+                <!-- <p>
           <el-button
             type="primary"
             icon="Cloudy"
@@ -24,9 +25,9 @@
             >访问主页</el-button
           >
         </p> -->
-      </el-col>
+            </el-col>
 
-      <el-col :sm="24" :lg="12" style="padding-left: 50px">
+            <!-- <el-col :sm="24" :lg="12" style="padding-left: 50px">
         <el-row>
           <el-col :span="12">
             <h2>技术选型</h2>
@@ -58,81 +59,86 @@
             </ul>
           </el-col>
         </el-row>
-      </el-col>
-    </el-row>
-    <el-divider />
-  </div>
+      </el-col> -->
+        </el-row>
+        <!-- <el-divider /> -->
+    </div>
 </template>
 
 <script setup name="Index">
-const version = ref('1.0.0')
+const version = ref("1.0.0");
 
 function goTarget(url) {
-  window.open(url, '__blank')
+    window.open(url, "__blank");
 }
 </script>
 
 <style scoped lang="scss">
 .home {
-  blockquote {
-    padding: 10px 20px;
-    margin: 0 0 20px;
-    font-size: 17.5px;
-    border-left: 5px solid #eee;
-  }
-  hr {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border: 0;
-    border-top: 1px solid #eee;
-  }
-  .col-item {
-    margin-bottom: 20px;
-  }
+    background-image: url("@/assets/images/bg.jpg");
+    background-size: cover; /* 设置背景图像覆盖整个 div */
+    background-position: center; /* 背景图像居中 */
+    background-repeat: no-repeat; /* 背景图像不重复 */
+    height: 660px;
 
-  ul {
-    padding: 0;
-    margin: 0;
-  }
-
-  font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  color: #676a6c;
-  overflow-x: hidden;
-
-  ul {
-    list-style-type: none;
-  }
-
-  h4 {
-    margin-top: 0px;
-  }
-
-  h2 {
-    margin-top: 10px;
-    font-size: 26px;
-    font-weight: 100;
-  }
-
-  p {
-    margin-top: 10px;
-
-    b {
-      font-weight: 700;
+    blockquote {
+        padding: 10px 20px;
+        margin: 0 0 20px;
+        font-size: 17.5px;
+        border-left: 5px solid #eee;
     }
-  }
-
-  .update-log {
-    ol {
-      display: block;
-      list-style-type: decimal;
-      margin-block-start: 1em;
-      margin-block-end: 1em;
-      margin-inline-start: 0;
-      margin-inline-end: 0;
-      padding-inline-start: 40px;
+    hr {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border: 0;
+        border-top: 1px solid #eee;
     }
-  }
+    .col-item {
+        margin-bottom: 20px;
+    }
+
+    ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    color: #676a6c;
+    overflow-x: hidden;
+
+    ul {
+        list-style-type: none;
+    }
+
+    h4 {
+        margin-top: 0px;
+    }
+
+    h2 {
+        margin-top: 10px;
+        font-size: 26px;
+        font-weight: 100;
+    }
+
+    p {
+        margin-top: 10px;
+
+        b {
+            font-weight: 700;
+        }
+    }
+
+    .update-log {
+        ol {
+            display: block;
+            list-style-type: decimal;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0;
+            margin-inline-end: 0;
+            padding-inline-start: 40px;
+        }
+    }
 }
 </style>
-
